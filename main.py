@@ -18,6 +18,7 @@ snowflake.anchor_y = snowflake.height / 2
 
 max_snowflakes = 1000
 snowflakes = []
+snowflakes_batch = pyglet.graphics.Batch()
 
 @window.event
 def on_resize(w, h):
@@ -26,8 +27,7 @@ def on_resize(w, h):
 @window.event
 def on_draw():
     window.clear()
-    for s in snowflakes:
-        s.draw()
+    snowflakes_batch.draw()
     fps_display.draw()
     flake_counter.draw()
 
@@ -36,7 +36,8 @@ def update(dt):
         s = pyglet.sprite.Sprite(
             snowflake,
             x=randint(0, window.width),
-            y=window.height)
+            y=window.height,
+            batch=snowflakes_batch)
         s.vx = 0
         s.vy = -1
         s.vrotation = 0
