@@ -30,17 +30,25 @@ def on_draw():
 
 def update(dt):
     if len(snowflakes) < max_snowflakes:
-        snowflakes.append(pyglet.sprite.Sprite(
+        s = pyglet.sprite.Sprite(
             snowflake,
             x=randint(0, window.width),
-            y=randint(0, window.height)))
+            y=window.height)
+        s.vx = 0
+        s.vy = -1
+        s.vrotation = 0
+        snowflakes.append(s)
 
     for s in snowflakes:
-        s.x += random() - 0.5
-        s.y -= random()
+        s.vx += (random() - 0.5) / 10.0
+        s.vy += (random() - 0.5) / 10.0
+        s.vrotation += (random() - 0.5) / 2.0
+
+        s.x += s.vx
+        s.y += s.vy
+        s.rotation += s.vrotation
         s.x %= window.width
         s.y %= window.height
-        s.rotation += random() - 0.5
 
     bullet.x += 3
     bullet.y += 2
