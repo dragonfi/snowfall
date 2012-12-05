@@ -9,6 +9,9 @@ window = pyglet.window.Window()
 pyglet.resource.path = ['data']
 pyglet.resource.reindex()
 
+fps_display = pyglet.clock.ClockDisplay()
+flake_counter = pyglet.text.Label(text = '0')
+
 arrow = pyglet.resource.image('white-arrow.png')
 snowflake = pyglet.resource.image('white-arrow.png')
 
@@ -27,6 +30,8 @@ def on_draw():
     bullet.draw()
     for s in snowflakes:
         s.draw()
+    fps_display.draw()
+    flake_counter.draw()
 
 def update(dt):
     if len(snowflakes) < max_snowflakes:
@@ -38,6 +43,7 @@ def update(dt):
         s.vy = -1
         s.vrotation = 0
         snowflakes.append(s)
+        flake_counter.text = str(len(snowflakes))
 
     for s in snowflakes:
         s.vx += (random() - 0.5) / 10.0
