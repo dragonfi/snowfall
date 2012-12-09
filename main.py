@@ -1,6 +1,7 @@
 #!/usr/bin/python2
 
 import pyglet
+from pyglet.window import key
 
 from random import randint, uniform, choice
 
@@ -9,9 +10,6 @@ window = pyglet.window.Window()
 pyglet.resource.path = ['.', 'data',
         '/home/dragonfi/prog/humble-bullet-curtain/data']
 pyglet.resource.reindex()
-
-fps_display = pyglet.clock.ClockDisplay()
-flake_counter = pyglet.text.Label(text = '0')
 
 snowflake_images = []
 for name in ('snowflake-filled.png', 'snowflake-frame.png', 'snowflake.png'):
@@ -23,36 +21,58 @@ for name in ('snowflake-filled.png', 'snowflake-frame.png', 'snowflake.png'):
 max_snowflakes = 1000
 max_a = max_acceleration = 2.0
 max_rot_a = max_rot_acceleration = 1.0
-target_framerate = 60.0
+target_fps = 20.0
+flake_size = 0.2
 
 snowflakes = []
 snowflakes_batch = pyglet.graphics.Batch()
 
+target_fps_label = pyglet.text.Label(text = str(target_fps),
+        x = window.width - 10,
+        y = 10,
+        anchor_x = 'right')
+
+flake_size_label = pyglet.text.Label(text = str(flake_size),
+        x = window.width - 50,
+        y = 10,
+        anchor_x = 'right')
+
+flake_counter_label = pyglet.text.Label(text = str(len(snowflakes)),
+        x = window.width - 90,
+        y = 10,
+        anchor_x = 'right')
+
+fps_display = pyglet.clock.ClockDisplay()
 @window.event
 def on_resize(w, h):
     print "on resize %d %d" % (w,h)
+    target_fps_label.x = window.width - 10
+    flake_size_label.x = window.width - 50
+    flake_counter_label.x = window.width - 90
 
 @window.event
 def on_draw():
     window.clear()
     snowflakes_batch.draw()
     fps_display.draw()
-    flake_counter.draw()
+    flake_counter_label.draw()
+    target_fps_label.draw()
+    flake_size_label.draw()
 
 def update(dt):
-    if pyglet.clock.get_fps() >= target_framerate * 0.95:
+    if pyglet.clock.get_fps() >= target_fps * 0.95:
         s = pyglet.sprite.Sprite(
             choice(snowflake_images),
             x=randint(0, window.width),
             y=window.height,
             batch=snowflakes_batch)
-        s.scale = uniform(0.05, 0.4)
+        s.scale = uniform(0.05, flake_size)
         s.vx = 0.0
         s.vy = -0.5
         s.vrotation = 0
         s.y = window.height + s.height // 2
         snowflakes.append(s)
-        flake_counter.text = str(len(snowflakes))
+        flake_counter_label.text = str(len(snowflakes))
 
     wh = window.height
     ww = window.width
@@ -74,7 +94,22 @@ def out_of_bounds(s):
     return (s.x < -s.width or s.x > ww + s.width
         or s.y < -s.height or s.y > wh + s.height)
 
+@window.event
+def on_key_press(sym, mod):
+    global target_fps
+    global flake_size
+    if sym == key.W:
+        target_fps += 1.0
+    if sym == key.S:
+        target_fps -= 1.0
+    if sym == key.E:
+        flake_size += 0.05
+    if sym == key.D and flake_size >= 0.1:
+        flake_size -= 0.05
 
-pyglet.clock.schedule_interval(update, 1.0/target_framerate)
+    target_fps_label.text = str(target_fps)
+    flake_size_label.text = str(flake_size)
+
+pyglet.clock.schedule_interval(update, 1.0/200.0)
 
 pyglet.app.run()
