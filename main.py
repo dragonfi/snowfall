@@ -21,6 +21,10 @@ for name in ('snowflake-filled.png', 'snowflake-frame.png', 'snowflake.png'):
     snowflake_images.append(snowflake)
 
 max_snowflakes = 1000
+max_a = max_acceleration = 2.0
+max_rot_a = max_rot_acceleration = 1.0
+target_framerate = 60.0
+
 snowflakes = []
 snowflakes_batch = pyglet.graphics.Batch()
 
@@ -36,16 +40,17 @@ def on_draw():
     flake_counter.draw()
 
 def update(dt):
-    if pyglet.clock.get_fps() >= 55.0:
+    if pyglet.clock.get_fps() >= target_framerate * 0.95:
         s = pyglet.sprite.Sprite(
             choice(snowflake_images),
             x=randint(0, window.width),
             y=window.height,
             batch=snowflakes_batch)
-        s.scale = uniform(0.05, 0.2)
-        s.vx = 0
+        s.scale = uniform(0.05, 0.4)
+        s.vx = 0.0
         s.vy = -0.5
         s.vrotation = 0
+        s.y = window.height + s.height // 2
         snowflakes.append(s)
         flake_counter.text = str(len(snowflakes))
 
@@ -54,14 +59,14 @@ def update(dt):
 
     for s in snowflakes:
         if s.vy > 0.0:
-            s.vy += uniform(-0.01, 0.00)
-        s.vy += uniform(-0.05, 0.05)
-        s.vx += uniform(-0.05, 0.05)
-        s.set_position((s.x + s.vx), (s.y + s.vy))
+            s.vy += uniform(-max_a / 10.0, 0.00)
+        s.vy += uniform(-max_a, max_a)
+        s.vx += uniform(-max_a, max_a)
+        s.set_position((s.x + s.vx * dt), (s.y + s.vy * dt))
         if out_of_bounds(s):
             snowflakes.remove(s)
-        s.vrotation += uniform(-0.05, 0.05)
-        s.rotation += s.vrotation
+        s.vrotation += uniform(-max_rot_a, max_rot_a)
+        s.rotation += s.vrotation * dt
 
 def out_of_bounds(s):
     ww = window.width
@@ -70,6 +75,6 @@ def out_of_bounds(s):
         or s.y < -s.height or s.y > wh + s.height)
 
 
-pyglet.clock.schedule_interval(update, 1/60.0)
+pyglet.clock.schedule_interval(update, 1.0/target_framerate)
 
 pyglet.app.run()
