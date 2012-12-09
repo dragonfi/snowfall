@@ -36,7 +36,7 @@ def on_draw():
     flake_counter.draw()
 
 def update(dt):
-    if len(snowflakes) < max_snowflakes:
+    if pyglet.clock.get_fps() >= 55.0:
         s = pyglet.sprite.Sprite(
             choice(snowflake_images),
             x=randint(0, window.width),
@@ -44,7 +44,7 @@ def update(dt):
             batch=snowflakes_batch)
         s.scale = uniform(0.05, 0.2)
         s.vx = 0
-        s.vy = -1
+        s.vy = -0.5
         s.vrotation = 0
         snowflakes.append(s)
         flake_counter.text = str(len(snowflakes))
@@ -53,11 +53,21 @@ def update(dt):
     ww = window.width
 
     for s in snowflakes:
+        if s.vy > 0.0:
+            s.vy += uniform(-0.01, 0.00)
         s.vy += uniform(-0.05, 0.05)
         s.vx += uniform(-0.05, 0.05)
-        s.set_position((s.x + s.vx) % ww, (s.y + s.vy) % wh)
+        s.set_position((s.x + s.vx), (s.y + s.vy))
+        if out_of_bounds(s):
+            snowflakes.remove(s)
         s.vrotation += uniform(-0.05, 0.05)
         s.rotation += s.vrotation
+
+def out_of_bounds(s):
+    ww = window.width
+    wh = window.height
+    return (s.x < -s.width or s.x > ww + s.width
+        or s.y < -s.height or s.y > wh + s.height)
 
 
 pyglet.clock.schedule_interval(update, 1/60.0)
