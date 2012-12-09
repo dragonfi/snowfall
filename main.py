@@ -2,11 +2,12 @@
 
 import pyglet
 
-from random import random, randint
+from random import randint, uniform
 
 window = pyglet.window.Window()
 
-pyglet.resource.path = ['data']
+pyglet.resource.path = ['.', 'data',
+        '/home/dragonfi/prog/humble-bullet-curtain/data']
 pyglet.resource.reindex()
 
 fps_display = pyglet.clock.ClockDisplay()
@@ -44,16 +45,15 @@ def update(dt):
         snowflakes.append(s)
         flake_counter.text = str(len(snowflakes))
 
-    for s in snowflakes:
-        s.vx += (random() - 0.5) / 10.0
-        s.vy += (random() - 0.5) / 10.0
-        s.vrotation += (random() - 0.5) / 2.0
+    wh = window.height
+    ww = window.width
 
-        s.x += s.vx
-        s.y += s.vy
+    for s in snowflakes:
+        s.vy += uniform(-0.05, 0.05)
+        s.vx += uniform(-0.05, 0.05)
+        s.set_position((s.x + s.vx) % ww, (s.y + s.vy) % wh)
+        s.vrotation += uniform(-0.05, 0.05)
         s.rotation += s.vrotation
-        s.x %= window.width
-        s.y %= window.height
 
 
 pyglet.clock.schedule_interval(update, 1/60.0)
