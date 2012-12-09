@@ -27,28 +27,41 @@ flake_size = 0.2
 snowflakes = []
 snowflakes_batch = pyglet.graphics.Batch()
 
+transparent_grey_color = (128, 128, 128, 128)
+font_size = 20
+
+target_fps_label_x_offset = -10
+flake_size_label_x_offset = -90
+flake_counter_label_x_offset = -170
+
 target_fps_label = pyglet.text.Label(text = str(target_fps),
-        x = window.width - 10,
+        x = window.width + target_fps_label_x_offset,
         y = 10,
+        color = transparent_grey_color,
+        font_size = 20,
         anchor_x = 'right')
 
 flake_size_label = pyglet.text.Label(text = str(flake_size),
-        x = window.width - 50,
+        x = window.width + flake_size_label_x_offset,
         y = 10,
+        color = transparent_grey_color,
+        font_size = 20,
         anchor_x = 'right')
 
 flake_counter_label = pyglet.text.Label(text = str(len(snowflakes)),
-        x = window.width - 90,
+        x = window.width + flake_counter_label_x_offset,
         y = 10,
+        color = transparent_grey_color,
+        font_size = 20,
         anchor_x = 'right')
 
 fps_display = pyglet.clock.ClockDisplay()
 @window.event
 def on_resize(w, h):
     print "on resize %d %d" % (w,h)
-    target_fps_label.x = window.width - 10
-    flake_size_label.x = window.width - 50
-    flake_counter_label.x = window.width - 90
+    target_fps_label.x = window.width + target_fps_label_x_offset
+    flake_size_label.x = window.width + flake_size_label_x_offset
+    flake_counter_label.x = window.width + flake_counter_label_x_offset
 
 @window.event
 def on_draw():
@@ -98,13 +111,13 @@ def out_of_bounds(s):
 def on_key_press(sym, mod):
     global target_fps
     global flake_size
-    if sym == key.W:
+    if sym == key.W or sym == key.NUM_ADD:
         target_fps += 1.0
-    if sym == key.S:
+    if sym == key.S or sym == key.NUM_SUBTRACT:
         target_fps -= 1.0
-    if sym == key.E:
+    if sym == key.E or sym == key.NUM_MULTIPLY:
         flake_size += 0.05
-    if sym == key.D and flake_size >= 0.1:
+    if (sym == key.D or sym == key.NUM_DIVIDE) and flake_size >= 0.1:
         flake_size -= 0.05
 
     target_fps_label.text = str(target_fps)
