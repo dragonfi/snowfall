@@ -1,5 +1,9 @@
 #!/usr/bin/python2
 
+
+import sys
+sys.path = ['', 'pyglet-1.1.4'] + sys.path
+
 import pyglet
 from pyglet.window import key
 
