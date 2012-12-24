@@ -9,7 +9,7 @@ from pyglet.window import key
 
 from random import randint, uniform, choice
 
-window = pyglet.window.Window()
+window = pyglet.window.Window(width=800, height=600, resizable=True)
 
 pyglet.resource.path = ['.', 'data',
         '/home/dragonfi/prog/humble-bullet-curtain/data']
