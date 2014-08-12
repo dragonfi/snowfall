@@ -14,21 +14,27 @@ window = pyglet.window.Window(width=800, height=600, resizable=True)
 pyglet.resource.path = ['.', 'data', '/home/dragonfi/python/snowfall/data']
 pyglet.resource.reindex()
 
-snowflake_images = []
-for name in ('snowflake-filled.png', 'snowflake-frame.png', 'snowflake.png'):
+def add_snowflake_image(images, name):
     snowflake = pyglet.resource.image(name)
     snowflake.anchor_x = snowflake.width / 2
     snowflake.anchor_y = snowflake.height / 2
-    snowflake_images.append(snowflake)
+    images.append(snowflake)
 
-image = pyglet.image.create(100, 100)
-data = ["\xff\xff\xff\xff" if i*i+j*j < 50*50 else "\x00\x00\x00\x00" for i in range(-50, 50) for j in range(-50, 50)]
-flat_data = "".join(data)
-image.set_data('RGBA', 400, flat_data)
-image = image.get_texture()
-image.anchor_x = image.width / 2
-image.anchor_y = image.height / 2
-snowflake_images.append(image)
+def add_circle_image(images, r=50):
+    img = pyglet.image.create(r*2, r*2)
+    data = ["\xff\xff\xff\xff" if i*i+j*j < r*r else "\x00\x00\x00\x00" for i in range(-r, r) for j in range(-r, r)]
+    flat_data = "".join(data)
+    img.set_data('RGBA', r*2*4, flat_data)
+    img.anchor_x = img.width / 2
+    img.anchor_y = img.height / 2
+    images.append(img)
+
+snowflake_images = []
+
+for name in ('snowflake-filled.png', 'snowflake-frame.png', 'snowflake.png'):
+    add_snowflake_image(snowflake_images, name)
+
+add_circle_image(snowflake_images)
 
 max_snowflakes = 1000
 max_a = max_acceleration = 2.0
