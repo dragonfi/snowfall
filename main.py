@@ -11,8 +11,7 @@ from random import randint, uniform, choice
 
 window = pyglet.window.Window(width=800, height=600, resizable=True)
 
-pyglet.resource.path = ['.', 'data',
-        '/home/dragonfi/prog/humble-bullet-curtain/data']
+pyglet.resource.path = ['.', 'data', '/home/dragonfi/python/snowfall/data']
 pyglet.resource.reindex()
 
 snowflake_images = []
