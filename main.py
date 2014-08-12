@@ -22,6 +22,15 @@ for name in ('snowflake-filled.png', 'snowflake-frame.png', 'snowflake.png'):
     snowflake.anchor_y = snowflake.height / 2
     snowflake_images.append(snowflake)
 
+image = pyglet.image.create(100, 100)
+data = ["\xff\xff\xff\xff" if i*i+j*j < 50*50 else "\x00\x00\x00\x00" for i in range(-50, 50) for j in range(-50, 50)]
+flat_data = "".join(data)
+image.set_data('RGBA', 400, flat_data)
+image = image.get_texture()
+image.anchor_x = image.width / 2
+image.anchor_y = image.height / 2
+snowflake_images.append(image)
+
 max_snowflakes = 1000
 max_a = max_acceleration = 2.0
 max_rot_a = max_rot_acceleration = 1.0
