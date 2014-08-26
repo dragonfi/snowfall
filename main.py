@@ -41,6 +41,7 @@ max_a = max_acceleration = 2.0
 max_rot_a = max_rot_acceleration = 1.0
 target_fps = 20.0
 flake_size = 0.2
+rotation_enabled = True
 
 snowflakes = []
 snowflakes_batch = pyglet.graphics.Batch()
@@ -116,8 +117,9 @@ def update(dt):
         s.set_position((s.x + s.vx * dt), (s.y + s.vy * dt))
         if out_of_bounds(s):
             snowflakes.remove(s)
-        s.vrotation += uniform(-max_rot_a, max_rot_a)
-        s.rotation += s.vrotation * dt
+        if rotation_enabled:
+            s.vrotation += uniform(-max_rot_a, max_rot_a)
+            s.rotation += s.vrotation * dt
 
 def out_of_bounds(s):
     ww = window.width
@@ -129,6 +131,7 @@ def out_of_bounds(s):
 def on_key_press(sym, mod):
     global target_fps
     global flake_size
+    global rotation_enabled
     if sym == key.W or sym == key.NUM_ADD:
         target_fps += 1.0
     if sym == key.S or sym == key.NUM_SUBTRACT:
@@ -137,6 +140,8 @@ def on_key_press(sym, mod):
         flake_size += 0.05
     if (sym == key.D or sym == key.NUM_DIVIDE) and flake_size >= 0.1:
         flake_size -= 0.05
+    if sym == key.NUM_0:
+        rotation_enabled = not rotation_enabled
 
     target_fps_label.text = str(target_fps)
     flake_size_label.text = str(flake_size)
