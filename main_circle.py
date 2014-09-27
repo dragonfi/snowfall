@@ -38,13 +38,15 @@ def on_draw():
     fps_display.draw()
 
 def update(dt):
-    size = min(window.width, window.height)
+    x_offset = window.width / 2
+    y_offset = window.height / 2
+    size = min(window.width, window.height) / 2
     assert len(vlists) == len(lines)
     for i in range(len(lines)):
         for j in range(len(lines[i])):
             lines[i][j] += i*j*dt*epsilon
-            vlists[i].vertices[2*j] = math.cos(lines[i][j])*size/2 + size/2
-            vlists[i].vertices[2*j+1] = math.sin(lines[i][j])*size/2 + size/2
+            vlists[i].vertices[2*j] = math.cos(lines[i][j])*size + x_offset
+            vlists[i].vertices[2*j+1] = math.sin(lines[i][j])*size + y_offset
             assert lines[i][0] == 0.0
 
 @window.event
